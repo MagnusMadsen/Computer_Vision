@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import colors
-from imageOperations import patchMaker
+from include.imageOperations import patchMaker
 
 
 # Indlæs billeder i henholdsvis BGR, gråtone og HSV 
