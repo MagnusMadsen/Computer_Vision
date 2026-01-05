@@ -1,15 +1,34 @@
 import cv2
 import numpy as np
+import os
 from rembg import bg
 
 # -----------------------------
 # 1. Læs billede og fjern baggrund
 # -----------------------------
-img = cv2.imread("images/Daniel_billeder/IMG_0331.jpeg")
-img = cv2.resize(img, (400, 600))
+
+# Find projektets rodmappe uanset hvor scriptet køres fra
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+image_path = os.path.join(
+    BASE_DIR,
+    "..",
+    "images",
+    "Daniel_billeder",
+    "IMG_0331.jpeg"
+)
+
+image_path = os.path.normpath(image_path)
+
+if not os.path.exists(image_path):
+    raise FileNotFoundError(f"Billedfilen blev ikke fundet: {image_path}")
+
+img = cv2.imread(image_path)
+if img is None:
+    raise ValueError(f"OpenCV kunne ikke læse billedet: {image_path}")
 
 # Fjern baggrund med rembg
-result_rgba = bg.remove(img)  # output BGRA
+result_rgba = bg.remove(img)
 
 # Lav mask fra alfa-kanal
 alpha = result_rgba[:, :, 3] / 255.0
