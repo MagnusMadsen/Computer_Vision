@@ -1,52 +1,68 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import colors
-from imageOperations import patchMaker
+import os
 
+# -----------------------------
+# Paths
+# -----------------------------
+IMAGE_DIR = "../images/Daniel_billeder"
+CASCADE_PATH = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 
-# Indlæs billeder i henholdsvis BGR, gråtone og HSV 
-bgr = cv2.imread("../images/shapes.jpg", cv2.IMREAD_COLOR)
-gray = cv2.imread("../images/pills.jpg", cv2.IMREAD_GRAYSCALE)
-bgr2 = cv2.imread("../images/Nemo.webp")
-hsv = cv2.cvtColor(bgr2, cv2.COLOR_BGR2HSV)
+# -----------------------------
+# Initialize
+# -----------------------------
+face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
+recognizer = cv2.face.LBPHFaceRecognizer_create()
 
-# Vis billeders opløsning
-print(bgr.shape)
-print(gray.shape)
+faces = []
+labels = []
 
-# Nedskalering til anden opløsning
-downscaleResolution = (300, 200)
-downScaled = cv2.resize(gray, downscaleResolution, interpolation=cv2.INTER_LINEAR)
+# -----------------------------
+# Load and process images
+# -----------------------------
+for filename in os.listdir(IMAGE_DIR):
+    if not filename.lower().endswith((".jpg", ".png", ".jpeg", ".webp")):
+        continue
 
-# Cropping
-cropped = gray[50:100, 100:150] # Slice of x, slice of y
-#patches = patchMaker(gray)
+    img_path = os.path.join(IMAGE_DIR, filename)
+    img = cv2.imread(img_path)
 
-# Funktion til at hjælpe med at "eyeball" HSV thresholds
-def hsv3Dscatter(hsv_img):
-    h, s, v = cv2.split(hsv_img)
+    if img is None:
+        continue
 
-    pixel_colors = hsv_img.reshape((np.shape(hsv_img)[0]*np.shape(hsv_img)[1], 3))
-    norm = colors.Normalize(vmin=-1.,vmax=1.)
-    norm.autoscale(pixel_colors)
-    pixel_colors = norm(pixel_colors).tolist()
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    detected_faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-    fig = plt.figure()
-    axis = fig.add_subplot(1, 1, 1, projection="3d")
-    axis.scatter(h.flatten(), s.flatten(), v.flatten(), facecolors=pixel_colors, marker=".")
-    axis.set_xlabel("Hue")
-    axis.set_ylabel("Saturation")
-    axis.set_zlabel("Value")
-    plt.show()
+    for (x, y, w, h) in detected_faces:
+        face = gray[y:y+h, x:x+w]
+        face = cv2.resize(face, (200, 200))
 
-hsv3Dscatter(hsv)
-'''
-# Vis billeder
-cv2.imshow('gray', gray)
-cv2.imshow('down', downScaled)
+        faces.append(face)
+        labels.append(0)  # Samme person (Daniel)
 
-cv2.waitKey(0)
+        # Visual debug (kan kommenteres ud)
+        cv2.imshow("Detected face", face)
+        cv2.waitKey(300)
+
 cv2.destroyAllWindows()
-'''
+
+# -----------------------------
+# Train model
+# -----------------------------
+if len(faces) == 0:
+    raise RuntimeError("Ingen ansigter fundet i billedmappen")
+
+recognizer.train(faces, np.array(labels))
+print(f"Træning gennemført med {len(faces)} ansigter")
+
+# -----------------------------
+# Test recognition
+# -----------------------------
+for i, face in enumerate(faces):
+    label, confidence = recognizer.predict(face)
+    print(f"Billede {i}: Label={label}, Confidence={confidence:.2f}")
+
+    if confidence < 60:
+        print("→ Samme person (match)")
+    else:
+        print("→ Usikker / ukendt")
