@@ -2,7 +2,7 @@ import cv2
 import numpy as np 
 from matplotlib import pyplot as plt 
 
-gray = cv2.imread("../images/pills.jpg", 0)
+gray = cv2.imread("../images/zebra.jpg", 0)
 bgr = cv2.imread("../images/zebra.jpg")
 hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
@@ -99,8 +99,8 @@ def showComparison():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-compareThresholds(bilat)
+#compareThresholds(bilat)
 #blobDetection(gray)
-#compareEdges(bilat)
+compareEdges(bilat)
 #hueEdges(hsv)
 #contourDetection(gray)
