@@ -3,8 +3,8 @@ import numpy as np
 from matplotlib import pyplot as plt 
 
 
-gray = cv2.imread("../images/balls.jpg", 0)
-bgr = cv2.imread("../images/balls.jpg")
+gray = cv2.imread("../images/pool.jpg", 0)
+bgr = cv2.imread("../images/pool.jpg")
 hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
 gauss = cv2.GaussianBlur(gray, (11, 11), 0)
