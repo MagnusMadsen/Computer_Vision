@@ -3,8 +3,8 @@ from matplotlib import pyplot as plt
 
 
 # De 2 billeder vi kommer til at bruge til sammenligning
-gray = cv2.imread("../images/boat.jpg", 0)
-grayComparison = cv2.imread("../images/castle.jpg", 0)
+gray = cv2.imread("../images/stop_template.jpg", 0)
+grayComparison = cv2.imread("../images/stop1.jpg", 0)
 
 # Background subtraction: https://docs.opencv.org/4.x/d1/dc5/tutorial_background_subtraction.html
 
