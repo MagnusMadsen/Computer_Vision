@@ -79,14 +79,14 @@ def blobDetection(grayimg):
     parameters = cv2.SimpleBlobDetector_Params()
     
     parameters.filterByArea = True
-    parameters.minArea = 10
-    parameters.maxArea = 100
+    parameters.minArea = 100
+    parameters.maxArea = 2000
     parameters.filterByCircularity = True
     parameters.minCircularity = 0.8
     parameters.maxCircularity = 1.0
     parameters.filterByInertia = True
-    parameters.minInertia = 0.1
-    parameters.filterByConvexity = True
+    parameters.minInertiaRatio = 1.0
+    parameters.filterByConvexity = False
     parameters.minConvexity = 0.1
 
     detector = cv2.SimpleBlobDetector_create(parameters)
