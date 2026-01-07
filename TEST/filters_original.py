@@ -80,10 +80,10 @@ def blobDetection(grayimg):
     
     parameters.filterByArea = True
     parameters.minArea = 10
-    parameters.maxArea = 2000
-    parameters.filterByCircularity = False
-    parameters.minCircularity = 0.8
-    parameters.maxCircularity = 1.0
+    parameters.maxArea = 500
+    parameters.filterByCircularity = True
+    parameters.minCircularity = 0.01
+    parameters.maxCircularity = 0.5
     parameters.filterByInertia = False
     parameters.minInertiaRatio = 1.0
     parameters.filterByConvexity = False
@@ -111,7 +111,7 @@ def showComparison():
     cv2.destroyAllWindows()
 
 #compareThresholds(bilat)
-blobDetection(gray)
+blobDetection(gauss)
 #compareEdges(gauss)
 #hueEdges(hsv)
 #contourDetection(gray)
