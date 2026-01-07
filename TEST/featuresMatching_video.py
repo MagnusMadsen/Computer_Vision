@@ -4,7 +4,8 @@ from matplotlib import pyplot as plt
 
 # De 2 billeder vi kommer til at bruge til sammenligning
 gray = cv2.imread("../images/Daniel_face.png", 0)
-grayComparison = cv2.imread("../images/Convertet.mp4", 0)
+
+cap = cv2.VideoCapture("../images/Convertet.mp4")
 
 # Background subtraction: https://docs.opencv.org/4.x/d1/dc5/tutorial_background_subtraction.html
 
@@ -74,9 +75,39 @@ def flannKnnMatching(img1, img2, keypoints1, keypoints2, description1, descripti
     plt.imshow(imageWithMatches,),plt.show()
 
 
-k1, d1 = siftKeypoints(gray)
-k2, d2 = siftKeypoints(grayComparison)
+gray_small = cv2.resize(gray, (0, 0), fx=0.5, fy=0.5)
+k1, d1 = orbKeypoints(gray_small)
 
-flannKnnMatching(gray, grayComparison, k1, k2, d1, d2)
-#knnDistanceMatch(gray, grayComparison, k1, k2, d1, d2)
-#bruteforceMatching(gray, grayComparison, k1, k2, d1, d2)
+orb = cv2.ORB.create(nfeatures=1000)
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+    frame_small = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+    grayComparison = cv2.cvtColor(frame_small, cv2.COLOR_BGR2GRAY)
+
+    k2, d2 = orb.detectAndCompute(grayComparison, None)
+    if d2 is None:
+        continue
+
+    matches = bf.match(d1, d2)
+    matches = sorted(matches, key=lambda x: x.distance)[:30]
+
+    matchedFrame = cv2.drawMatches(
+        gray_small, k1,
+        grayComparison, k2,
+        matches, None,
+        flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS
+    )
+
+    cv2.imshow("Live Feature Matching (~25 FPS) - press q to quit", matchedFrame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
