@@ -8,8 +8,9 @@ bgr = cv2.imread("../images/zebra.jpg")
 hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
 gauss = cv2.GaussianBlur(gray, (11, 11), 0)
-bilat = cv2.bilateralFilter(gray, 11, sigmaColor=75, sigmaSpace=75)
+bilat = cv2.bilateralFilter(gray, 5, sigmaColor=75, sigmaSpace=75)
 
+#_, th3 = cv2.threshold(gray, 125, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)    
 
 def compareEdges(filteredImg):
     sobelx = cv2.Sobel(src=filteredImg, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=5)
@@ -78,9 +79,15 @@ def blobDetection(grayimg):
     parameters = cv2.SimpleBlobDetector_Params()
     
     parameters.filterByArea = True
-    parameters.minArea = 10 
-    parameters.filterByCircularity = True 
-    parameters.minCircularity = 0.1
+    parameters.minArea = 100 
+    parameters.maxArea = 100000
+    parameters.filterByCircularity = True
+    parameters.minCircularity = 0.8
+    parameters.maxCircularity = 1.0
+    parameters.filterByInertia = True
+    parameters.minInertia = 0.1
+    parameters.filterByConvexity = True
+    parameters.minConvexity = 0.1
 
     detector = cv2.SimpleBlobDetector_create(parameters)
 
