@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('../images/balls.jpg',0)
+img = cv2.imread('../images/pills.jpg',0)
 img = cv2.medianBlur(img,5)
 cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
 
 circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,10,
-                            param1=10,param2=12,minRadius=0,maxRadius=20)
+                            param1=20,param2=30,minRadius=30,maxRadius=40)
 
 circles = np.uint16(np.around(circles))
 for i in circles[0,:]:
