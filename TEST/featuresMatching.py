@@ -3,8 +3,8 @@ from matplotlib import pyplot as plt
 
 
 # De 2 billeder vi kommer til at bruge til sammenligning
-gray = cv2.imread("../images/stop_template.jpg", 0)
-grayComparison = cv2.imread("../images/stop1.jpg", 0)
+gray = cv2.imread("../images/Daniel_face.png", 0)
+grayComparison = cv2.imread("../images/Daniel.jpg", 0)
 
 # Background subtraction: https://docs.opencv.org/4.x/d1/dc5/tutorial_background_subtraction.html
 
@@ -77,5 +77,6 @@ def flannKnnMatching(img1, img2, keypoints1, keypoints2, description1, descripti
 k1, d1 = siftKeypoints(gray)
 k2, d2 = siftKeypoints(grayComparison)
 
-flannKnnMatching(gray, grayComparison, k1, k2, d1, d2)
-#knnDistanceMatch(gray, grayComparison, k1, k2, d1, d2)
+#flannKnnMatching(gray, grayComparison, k1, k2, d1, d2)
+knnDistanceMatch(gray, grayComparison, k1, k2, d1, d2)
+#bruteforceMatching(gray, grayComparison, k1, k2, d1, d2)
