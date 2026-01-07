@@ -3,8 +3,8 @@ import numpy as np
 from matplotlib import pyplot as plt 
 
 
-gray = cv2.imread("../images/pills.jpg", 0)
-bgr = cv2.imread("../images/zebra.jpg")
+gray = cv2.imread("../images/balls.jpg", 0)
+bgr = cv2.imread("../images/balls.jpg")
 hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
 gauss = cv2.GaussianBlur(gray, (11, 11), 0)
@@ -79,15 +79,9 @@ def blobDetection(grayimg):
     parameters = cv2.SimpleBlobDetector_Params()
     
     parameters.filterByArea = True
-    parameters.minArea = 100 
-    parameters.maxArea = 100000
-    parameters.filterByCircularity = True
-    parameters.minCircularity = 0.8
-    parameters.maxCircularity = 1.0
-    parameters.filterByInertia = True
-    parameters.minInertia = 0.1
-    parameters.filterByConvexity = True
-    parameters.minConvexity = 0.1
+    parameters.minArea = 10
+    parameters.filterByCircularity = True 
+    parameters.minCircularity = 0.1
 
     detector = cv2.SimpleBlobDetector_create(parameters)
 
